@@ -7,7 +7,7 @@ vars:
 
 includes:
   utils:
-    taskfile: ../../../utils/Taskfile.yaml
+    taskfile: ../../../utils/Taskfile.yml
     dir: ../../../utils
 
 tasks:

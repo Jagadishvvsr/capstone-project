@@ -11,7 +11,7 @@ services/node/api-node:
  - ".github/workflows/test.yaml"
 
 services/react/client-react: 
- - "/services/react/client-react/**"
+ - "services/react/client-react/**"
  - ".github/workflows/test.yaml"
 
 services/python/load-generator-python: 
