@@ -1,0 +1,53 @@
+version: "3"
+
+vars: 
+   IMAGE_URL: jagadishvalluri/devops-gitactions-repo-go
+   IMAGE_TAG: foobarbaz
+   DATABASE_URL: "postgres://postgres:foobarbaz@localhost:5432/postgres"
+   SERVICE_RELEASE_TAG: services/go/api-golang
+
+includes:
+    utils:
+      taskfile: ../../../utils/Taskfile.yml
+      dir: ../../../utils 
+
+tasks:
+  install:
+    desc: install dependencies
+    cmds:
+      -  go mod tidy
+  
+  install-ci:
+    desc: install dependencies in ci 
+    cmds:
+      - go mod download
+  
+  tests:
+    desc: run tests
+    cmds:
+      - go test ./test -v
+
+  run-app:
+    desc: install deps and run app 
+    cmds: 
+      - echo $PWD
+      - ls
+      - DATABASE_URL={{ .DATABASE_URL}} go run mod.go
+
+  build-container-image-ko:
+    desc: build container image with ko
+    cmds:
+      - |
+        KO_DOCKER_REPO = '{{ .IMAGE_REPO }}' ko build --bare --tags={{ .IMAGE_TAG }} --platform=all'
+
+  build-container-image:
+    desc: build container image
+    cmds:
+      - |
+        docker build -t={{.IMAGE_TAG}} .
+
+  build-multi-platform-images:
+    desc: build multi platform image with buildx
+    cmds:
+      - |
+        docker buildx build --platform linux/amd64, linux/arm64 -t {{.IMAGE_REPO}}:{{.IMAGE_TAG}} --push .

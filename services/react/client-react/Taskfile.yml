@@ -1,0 +1,43 @@
+version: "3"
+
+vars:
+  IMAGE_REPO: jagadishvalluri/devops-gitactions-repo-client
+  IMAGE_TAG: foobarbaz
+  SERVICE_RELEASE_TAG: services/react/client-react
+
+includes:
+  utils:
+    taskfile: ../../../utils/Taskfile.yml
+    dir: ../../../utils
+
+tasks:
+  build-container-image:
+    desc: "build multi-arch container image"
+    cmds:
+      - |
+        docker buildx build \
+        --platform linux/amd64,linux/arm64 \
+        -t {{.IMAGE_REPO}}:{{.IMAGE_TAG}} \
+        --push \
+        .
+
+  install: 
+    desc: install dependencies
+    cmds:
+      - npm install
+
+  install-ci:
+    desc: install dependencies
+    cmds: 
+      - npm ci 
+    
+
+  run-app:
+    desc: Start react client 
+    cmds:
+      - npm run dev
+
+  tests:
+    desc: run tests
+    cmds:
+      - npm run test

@@ -1,0 +1,34 @@
+version: "3"
+
+
+vars:
+  IMAGE_TAG: jagadishvalluri/devops-gitactions-repo-node
+  IMAGE_URL: foobarbaz
+  DATABASE_URL: "postgres://postgres:foobarbaz@localhost:5432/postgres"
+  SERVICE_RELEASE_TAG: services/node/api-node
+
+includes:
+  utils:  
+     taskfile: ../../../utils/Taskfile.yml
+     dir: ../../../utils 
+
+tasks:
+  install:
+    desc: install dependencies
+    cmds: 
+      - npm install
+
+  install-ci:
+    desc: install dependencies for ci 
+    cmds:
+      - npm ci 
+
+  run-app:
+    desc: run the nodejs application
+    cmds:
+     - DATABASE_URL={{.DATABASE_URL}} npm run dev
+    
+  tests:
+    desc: run tests
+    cmds:
+      - npm run test
