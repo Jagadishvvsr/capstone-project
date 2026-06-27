@@ -2,10 +2,10 @@ version: "3"
 
 
 vars:
-  IMAGE_TAG: jagadishvalluri/devops-gitactions-repo-node
-  IMAGE_URL: foobarbaz
+  IMAGE_TAG: "jagadishvalluri/devops-gitactions-repo-node"
+  IMAGE_URL: "foobarbaz"
   DATABASE_URL: "postgres://postgres:foobarbaz@localhost:5432/postgres"
-  SERVICE_RELEASE_TAG: services/node/api-node
+  SERVICE_RELEASE_TAG: "services/node/api-node"
 
 includes:
   utils:  

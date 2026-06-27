@@ -7,9 +7,14 @@ tasks:
       SERVICE_RELEASE_TAG: "{{.CLI_ARGS}}"
     cmds:
       - |
-        set -euo pipefail TAG=$( git describe --tags --always --first-parent --match "{{ .SERVICE_RELEASE_TAG}}@[0-9]*.[0-9]*.[0-9]*")
+        set -euo pipefail 
+        
+        TAG=$(git describe --tags --always --first-parent --match "{{.SERVICE_RELEASE_TAG}}@[0-9]*.[0-9]*.[0-9]*")
+        
         PREFIX="{{.SERVICE_RELEASE_TAG}}@"
+        
         echo "${TAG#${PREFIX}}"
+    silent: true
 
   generate-version-tag:
       desc: "combine the tag and the version"
@@ -17,8 +22,8 @@ tasks:
         SERVICE_RELEASE_TAG: "{{.CLI_ARGS }}"
         VERSION:
           sh: task -s generate-version -- {{ .SERVICE_RELEASE_TAG }}
-        cmds: 
-         - echo {{.IMAGE_URL}}:{{.VERSION}}
+      cmds: 
+        - echo "{{.IMAGE_TAG}}:{{.VERSION}}"
 
   generate-extended_version:
     desc: "generate extended version with R:C:SH"
@@ -50,7 +55,7 @@ tasks:
           sh: task -s generate-extended_version -- {{.SERVICE_RELEASE_TAG}}
       cmds:
       - |
-        echo "{{.IMAGE_URL}}:{{.VERSION}}"
+        echo "{{.IMAGE_TAG}}:{{.VERSION}}"
 
   manual-version-tag:
       desc: "combine the image repo with input version tag"
@@ -58,7 +63,7 @@ tasks:
         VERSION: "{{.CLI_ARGS}}"
       cmds:
         - |
-          echo "{{.IMAGE_URL}}:{{.VERSION }}"
+          echo "{{.IMAGE_TAG}}:{{.VERSION }}"
 
   update-image-tags:
     desc: "update image tags in yaml files for deployment"
