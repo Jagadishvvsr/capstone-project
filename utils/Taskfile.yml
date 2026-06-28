@@ -43,7 +43,7 @@ tasks:
        fi
 
        # split the zero and padd the number for sorting
-       IFS ='-' read -r BASE_VER COUNT GREF <<< "$GREF"
+       IFS ='-' read -r BASE_VER COUNT GREF <<< "$GIT_VERSION"
        printf "%s-%04d-%s\n" "$BASE_VER" "$COUNT" "$GREF"
     silent: true
 
