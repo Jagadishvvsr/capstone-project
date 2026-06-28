@@ -95,33 +95,35 @@ jobs:
              with: 
                 username: ${{ vars.DOCKERHUB_USERNAME }}
                 password: ${{ secrets.DOCKERHUB_TOKEN }}
-           - name: Version tags
-             uses: docker/setup-qemu-action@v4
+          #  - name: Version tags
+          #    uses: docker/setup-qemu-action@v4
            
-           - name: Set up Docker Buildx
-             uses: docker/setup-buildx-action@v4
+          #  - name: Set up Docker Buildx
+          #    uses: docker/setup-buildx-action@v4
            
            - name: commute Image tag
              id: image-tag
              working-directory: "${{ matrix.services }}"
              env:
-              ENVIRONMENT: "staging"
+              ENVIRONMENT: ${{ needs.filter.outputs.environment }}
               SERVICE: "${{ matrix.services }}"
              run: |
                 
-                if [[ $ENVIRONMENT == "production"]]; then
+                if [[ $ENVIRONMENT == "production" ]]; then
                     version=$(task utils:generate-version -- "$SERVICE")
                     image_tag=$(task utils:generate-version-tag -- "$SERVICE")
                 else   
-                    version=$(task utils:generate-extended_version -- "$SERVICE")
-                    image_tag=$(task utils:generate-extended_version-tag -- "$SERVICE")
+                    version=$(task utils:generate-extended-version -- "$SERVICE")
+                    image_tag=$(task utils:generate-extended-version-tag -- "$SERVICE")
+                fi 
 
-                echo "version=$version" >> $GITHUB_OUTPUT
-                echo "image_tag=$image_tag" >> $GITHUB_OUTPUT
+                echo "version=$version" >> "$GITHUB_OUTPUT"
+                echo "image_tag=$image_tag" >> "$GITHUB_OUTPUT"
                 ## TODO: generate the actual version/tag
 
                 echo "version=$version" 
                 echo "image_tag=$image_tag"
+                  
             
            - name: Build and push
              uses: docker/build-push-action@v7

@@ -25,34 +25,34 @@ tasks:
       cmds: 
         - echo "{{.IMAGE_TAG}}:{{.VERSION}}"
 
-  generate-extended_version:
+  generate-extended-version:
     desc: "generate extended version with R:C:SH"
     vars:
       SERVICE_RELEASE_TAG: "{{.CLI_ARGS}}"
       BASE_VERSION: 
-        sh: task -s generate-version -- {{ .SERVICE_RELEASE_TAG}}
+        sh: task -s generate-version -- "{{ .SERVICE_RELEASE_TAG }}"
     cmds:
       - |
        set -euo pipefail
 
        GIT_VERSION="{{.BASE_VERSION}}"
 
-       if [[ !GIT_VERSION =~ -g[0-9a-fA-F]+$]]; then
+       if [[ ! "$GIT_VERSION" =~ -g[0-9a-fA-F]+$ ]]; then
         GIT_HASH="$(git rev-parse --short HEAD)"
-        GIT_VERSION: "${GIT_VERSION}-0-g${GIT_HASH}"
+        GIT_VERSION="${GIT_VERSION}-0-g${GIT_HASH}"
        fi
 
        # split the zero and padd the number for sorting
-       IFS = '-' read -r BASE_VER COUNT GREF <<< "$GREF"
+       IFS ='-' read -r BASE_VER COUNT GREF <<< "$GREF"
        printf "%s-%04d-%s\n" "$BASE_VER" "$COUNT" "$GREF"
     silent: true
 
-  generate-extended_version-tag:
+  generate-extended-version-tag:
       desc: "extended version tag"
       vars:
         SERVICE_RELEASE_TAG: "{{.CLI_ARGS}}"
         VERSION:
-          sh: task -s generate-extended_version -- {{.SERVICE_RELEASE_TAG}}
+          sh: task -s generate-extended-version -- {{.SERVICE_RELEASE_TAG}}
       cmds:
       - |
         echo "{{.IMAGE_TAG}}:{{.VERSION}}"
