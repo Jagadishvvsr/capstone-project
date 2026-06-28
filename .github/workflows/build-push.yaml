@@ -46,21 +46,22 @@ jobs:
          - name: setup-matrix
            id: setup-matrix
            run: |
-            if [[ "${{ github.ref_type}}" == "workflow_dispatch" ]]; then
+            if [[ "${{ github.event_name}}" == "workflow_dispatch" ]]; then
 
-                echo "services=["${{ inputs.services }}"]" >> GITHUB_OUTPUT
-                echo "environment=development" >> GITHUB_OUTPUT
+                echo "services=["${{ inputs.services }}"]" >> "$GITHUB_OUTPUT"
+                echo "environment=development" >> "$GITHUB_OUTPUT"
 
 
             elif [[ "${{ github.ref_type}}" == "tag" ]]; then
                 tag="${GITHUB_REF_NAME}"
-                svc="{tag%%@*}"
+                svc="${tag%%@*}"
                 echo "services=[\"$svc\"]" >> GITHUB_OUTPUT
                 echo "environment=production" >> GITHUB_OUTPUT
            
             else
                 echo "services=${{ steps.filter.outputs.changes}}" >> GITHUB_OUTPUT
                 echo "environment=staging" >> GITHUB_OUTPUT
+            fi
 
 
     build-push-container-image:
