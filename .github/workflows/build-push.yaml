@@ -48,8 +48,8 @@ jobs:
            run: |
             if [[ "${{ github.event_name}}" == "workflow_dispatch" ]]; then
 
-                echo "services=["${{ inputs.services }}"]" >> "$GITHUB_OUTPUT"
-                echo "environment=development" >> "$GITHUB_OUTPUT"
+                echo 'services=["${{ inputs.services }}"]'  >> "$GITHUB_OUTPUT"
+                echo 'environment=development' >> "$GITHUB_OUTPUT"
 
 
             elif [[ "${{ github.ref_type}}" == "tag" ]]; then
@@ -63,6 +63,12 @@ jobs:
                 echo "environment=staging" >> GITHUB_OUTPUT
             fi
 
+         - name: echo services
+           run: |
+            echo ${{ steps.setup-matrix.outputs.services }}
+            echo ${{ steps.setup-matrix.outputs.environment }}
+
+
 
     build-push-container-image:
         if: ${{ needs.filter.outputs.services != '[]' && needs.filter.outputs.services != ' ' }}
@@ -70,7 +76,6 @@ jobs:
           fail-fast: false
           matrix:
               services: ${{ fromJson(needs.filter.outputs.services) }}
-              environment: ${{ fromJson(needs.filter.outputs.environment) }}
         needs: filter    
         runs-on: ubuntu-24.04
         steps:
